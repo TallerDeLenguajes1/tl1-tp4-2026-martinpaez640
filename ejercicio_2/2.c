@@ -17,12 +17,13 @@ Nodo *crearNodo(int duracion, char descripcion[], int *tareaID);
 void InsertarNodo(Nodo **cabeza, Nodo *nodo);
 void mostrar(Nodo *l);
 Nodo *quitarNodo(Nodo **r, int dato);
+Nodo *buscarNodo(Nodo *r, int dato, char descri[], int seleccion);
 int main()
 {
     Nodo *listaPendiente = crearLista();
     Nodo *listaRealizada = crearLista();
-    int nueva = 0, duracion, tareaID = 1000, dato = 0;
-    char buff[60];
+    int nueva = 0, duracion, tareaID = 1000, dato = 0, seleccion = 0;
+    char buff[60], buffaux[50];
     while (nueva == 0)
     {
         printf("\nIngrese la tarea a realizar: ");
@@ -59,9 +60,60 @@ int main()
     mostrar(listaRealizada);
     printf("\nLista de tareas aun no realizadas");
     mostrar(listaPendiente);
-    nueva=0;
-    
+
+    printf("\nSeleccione 1 para buscar por id o 2 para buscar por palabra: ");
+    scanf("%d", &seleccion);
+
+    if (seleccion == 1)
+    {
+        printf("Seleccione un id: ");
+        scanf("%d", &dato);
+    }
+    else if (seleccion == 2)
+    {
+        printf("Indique que palabra desea buscar: ");
+        getchar();
+        gets(buffaux);
+    }
+    Nodo *t = buscarNodo(listaPendiente, dato, buffaux, seleccion);
+
+    if (t == NULL)
+    {
+        t = buscarNodo(listaRealizada, dato, buffaux, seleccion);
+    }
+    if (t == NULL)
+    {
+        printf("Dato no encontrado");
+    }
+    else
+    {
+        printf("Datos encontrados\nDescripcion: %s\nId: %d", t->T.Descripcion, t->T.TareaID);
+    }
     return 0;
+}
+Nodo *buscarNodo(Nodo *r, int dato, char descri[], int seleccion)
+{
+    Nodo *aux = r;
+    if (seleccion == 1)
+    {
+        while (aux != NULL && dato != aux->T.TareaID)
+        {
+            aux = aux->Siguiente;
+        }
+    }
+    else if (seleccion == 2)
+    {
+        while (aux != NULL && strstr(aux->T.Descripcion, descri) == NULL)
+        {
+            aux = aux->Siguiente;
+        }
+    }
+    else
+    {
+        return NULL;
+    }
+
+    return aux;
 }
 Nodo *quitarNodo(Nodo **r, int dato)
 {
@@ -92,9 +144,12 @@ void mostrar(Nodo *l)
     int i = 1;
     while (aux != NULL)
     {
+        printf("\n########################");
         printf("\nTarea numero: %d", i);
         printf("\nDescripcion de la tarea: %s", aux->T.Descripcion);
         printf("\nId de la tarea: %d", aux->T.TareaID);
+        printf("\n########################");
+        ;
         i++;
         aux = aux->Siguiente;
     }
