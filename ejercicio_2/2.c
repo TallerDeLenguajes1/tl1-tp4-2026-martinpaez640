@@ -36,13 +36,31 @@ int main()
         getchar();
     }
     nueva = 0;
+    while (nueva == 0)
+    {
+        mostrar(listaPendiente);
+        printf("\nIngrese el id de la tarea que se completo:  ");
+        scanf("%d", &dato);
+        Nodo *r = quitarNodo(&listaPendiente, dato);
+        InsertarNodo(&listaRealizada, r);
+        if (r != NULL)
+        {
+            printf("\nTarea %s realizada", r->T.Descripcion);
+        }
+        else
+        {
+            printf("\nNo se encontro la tarea solicitada");
+        }
 
+        printf("\nPara marcar como realizada otra tarea precione 0 para finalizar 1: ");
+        scanf("%d", &nueva);
+    }
+    printf("Lista de tareas realizadas");
+    mostrar(listaRealizada);
+    printf("\nLista de tareas aun no realizadas");
     mostrar(listaPendiente);
-    printf("Cual de las tareas segun su id desea mover a tareas realizadas? ");
-    scanf("%d", &dato);
-    Nodo *r = quitarNodo(&listaPendiente, dato);
-    printf("\n%s", r->T.Descripcion);
-
+    nueva=0;
+    
     return 0;
 }
 Nodo *quitarNodo(Nodo **r, int dato)
@@ -97,6 +115,9 @@ Nodo *crearNodo(int duracion, char descripcion[], int *tareaID)
 }
 void InsertarNodo(Nodo **cabeza, Nodo *nodo)
 {
-    nodo->Siguiente = *cabeza;
-    *cabeza = nodo;
+    if (nodo != NULL)
+    {
+        nodo->Siguiente = *cabeza;
+        *cabeza = nodo;
+    }
 }
